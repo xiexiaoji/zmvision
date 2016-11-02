@@ -195,7 +195,7 @@ int AdcInit( int adcSelect, int adcInput ) {
         }
         SetRegBitsWithMask(adcRegBase, ADC_CTRL, 0x000001FF, 0x00000101);
     } else {
-        SetRegBitsWithMask(adcRegBase, ADC_CTRL, 0x00000177, 0x00000100);
+        SetRegBitsWithMask(adcRegBase, ADC_CTRL, 0x00000177, 0x00000140);
         SetReg(adcRegBase, ADC_SYSCONFIG, 0x00000000);
         SetReg(adcRegBase, ADC_DMAEN_CLR, 0x00000003);
         SetReg(adcRegBase, ADC_CLKDIV, 0x00000010);
@@ -209,7 +209,7 @@ int AdcInit( int adcSelect, int adcInput ) {
             SetReg(adcRegBase, ADC_STEPDELAY1, ADC1_STEPDELAY_CONFIG);
         }
         SetReg(adcRegBase, ADC_STEPEN, 0x00000002);
-        SetRegBitsWithMask(adcRegBase, ADC_CTRL, 0x00000177, 0x00000101);
+        SetRegBitsWithMask(adcRegBase, ADC_CTRL, 0x00000177, 0x00000141);
     }
 
     munmap(adcRegBase, ADC_REGISTER_LEN);
