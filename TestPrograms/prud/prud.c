@@ -10,13 +10,14 @@
 void ShowHelp ( void ) {
     printf("prud [opts]\n");
     printf("\topts:\n");
-    printf("\t-u:PRU num, 0:ICSS0_PRU0, 1:ICSS0_PRU1, 2:ICSS1_PRU0, 3:ICSS1_PRU1\n");
-    printf("\t-t:Ioctl command type,\n");
+    printf("\t-u 0~3 : PRU num, 0:ICSS0_PRU0, 1:ICSS0_PRU1, 2:ICSS1_PRU0, 3:ICSS1_PRU1\n");
+    printf("\t-t 0~7 : Ioctl command type,\n");
     printf("\t\t0:Enable, 1:Disable, 2:Reset, 3:Load firmware\n");
-    printf("\t\t4:Read data, 5:Write data, 6:Send event, 7:Clear event\n");
-    printf("\t-f:File name for firmware or data\n");
-    printf("\t-e:Event number\n");
-    printf("\t-h:Show this help\n");
+    printf("\t\t4:Read data, 5:Write data(Not support now)\n");
+    printf("\t\t6:Send event, 7:Clear event\n");
+    printf("\t-f FileName : File name for firmware or data(For cmd type '3:Load firmware')\n");
+    printf("\t-e EventNum : Event number(For cmd type '6:Send event' '7:Clear event')\n");
+    printf("\t-h : Show this help\n");
     return;
 }
 

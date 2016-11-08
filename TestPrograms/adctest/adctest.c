@@ -205,7 +205,7 @@ int AdcInit( int adcSelect, int adcInput ) {
             SetReg(adcRegBase, ADC_STEPDELAY1, ADC1_STEPDELAY_CONFIG);
         } else {
             SetReg(adcRegBase, ADC_IDLECONFIG, 0x02440000);
-            SetReg(adcRegBase, ADC_STEPCONFIG1, 0x02008001);
+            SetReg(adcRegBase, ADC_STEPCONFIG1, 0x02008003);
             SetReg(adcRegBase, ADC_STEPDELAY1, ADC1_STEPDELAY_CONFIG);
         }
         SetReg(adcRegBase, ADC_STEPEN, 0x00000002);
