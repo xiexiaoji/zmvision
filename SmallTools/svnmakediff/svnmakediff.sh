@@ -10,6 +10,12 @@ for line in `cat modifyfiles.txt`
 do
     filepath=${line%/*}
 
+    svn info $filepath 1>/dev/null 2>/dev/null
+    if [ $? = 0 ]
+    then
+        mkdir -p zzdiffpatch/old/$filepath
+    fi
+
     svn info $line 1>/dev/null 2>/dev/null
     if [ $? = 0 ]
     then
