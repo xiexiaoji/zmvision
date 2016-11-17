@@ -34,21 +34,42 @@ int GpioInit( void ) {
     close(fd);
     fd = 0;
 
+    fd = open("/sys/class/gpio/export", O_WRONLY);
+    if (fd < 0) {
+        return FAIL;
+    }
+    write(fd, "183", 3);
+    close(fd);
+    fd = 0;
+
+    fd = open("/sys/class/gpio/gpio183/direction", O_WRONLY | O_TRUNC);
+    if (fd < 0) {
+        return FAIL;
+    }
+    write(fd, "out", 3);
+    close(fd);
+    fd = 0;
+
     return OK;
 }
 
 void StatusChg( void ) {
-    int fd = 0;
+    int fd3 = 0;
+    int fd6 = 0;
 
-    fd = open("/sys/class/gpio/gpio186/value", O_WRONLY | O_TRUNC);
+    fd3 = open("/sys/class/gpio/gpio183/value", O_WRONLY | O_TRUNC);
+    fd6 = open("/sys/class/gpio/gpio186/value", O_WRONLY | O_TRUNC);
     if (0 == lastStatus) {
-        write(fd, "1", 1);
+        write(fd3, "1", 1);
+        write(fd6, "0", 1);
         lastStatus = 1;
     } else {
-        write(fd, "0", 1);
+        write(fd3, "0", 1);
+        write(fd6, "1", 1);
         lastStatus = 0;
     }
-    close(fd);
+    close(fd3);
+    close(fd6);
         
     return;
 }
@@ -125,7 +146,7 @@ int main( int argc, char * argv[] ) {
 
     if (argc >= 2) {
         interval = atoi(argv[1]);
-        printf("interval = %d\n", interval);
+        printf("interval = %dms\n", interval);
         if (0 == interval) {
             interval = 50;
         }

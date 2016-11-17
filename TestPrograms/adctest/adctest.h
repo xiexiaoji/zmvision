@@ -87,7 +87,8 @@ typedef enum {
 typedef enum {
     ADC_INPUT_SINGLE = 0,
     ADC_INPUT_DIFF,
-    ADC_INPUT_MULTI
+    ADC_INPUT_MULTI,
+    ADC_INPUT_CONTI
 }EN_AdcInput;
 
 #endif //__ADC_TEST_H__
