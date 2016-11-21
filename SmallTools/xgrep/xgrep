@@ -1,0 +1,12 @@
+#! /bin/sh
+
+GREP_PATH=""
+GREP_STR="$1"
+
+until [ -z "$2" ]
+do
+    GREP_PATH=$GREP_PATH"$2 "
+    shift
+done
+
+find $GREP_PATH -type f | grep -Ev "(svn)|(git)" | xargs grep -n --color $GREP_STR
