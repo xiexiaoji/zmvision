@@ -9,4 +9,4 @@ do
     shift
 done
 
-find $GREP_PATH -type f | grep -Ev "(svn)|(git)" | xargs grep -n --color $GREP_STR
+find $GREP_PATH -type f | grep -Ev "(svn)|(git)|(tags)" | xargs grep -n --color $GREP_STR
