@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <pthread.h>
 #include <signal.h>
 #include <sys/types.h>
@@ -61,15 +62,22 @@ void StatusChg( void ) {
     fd6 = open("/sys/class/gpio/gpio186/value", O_WRONLY | O_TRUNC);
     if (0 == lastStatus) {
         write(fd3, "1", 1);
-        write(fd6, "0", 1);
-        lastStatus = 1;
-    } else {
-        write(fd3, "0", 1);
+        //write(fd6, "0", 1);
+    } else if (5 == lastStatus) {
         write(fd6, "1", 1);
-        lastStatus = 0;
+    } else if (3 == lastStatus) {
+        write(fd3, "0", 1);
+        //write(fd6, "1", 1);
+    } else if (2 == lastStatus) {
+        write(fd6, "0", 1);
     }
     close(fd3);
     close(fd6);
+
+    lastStatus++;
+    if (lastStatus >= 6) {
+        lastStatus = 0;
+    }
         
     return;
 }
@@ -156,7 +164,7 @@ int main( int argc, char * argv[] ) {
     memset((void *)&evp, 0x00, sizeof(struct sigevent));
     evp.sigev_value.sival_int = 0;
     evp.sigev_notify = SIGEV_THREAD;
-    evp.sigev_notify_function = StatusChg;
+    evp.sigev_notify_function = (void*)StatusChg;
     evp.sigev_notify_attributes = &attr;
 
     if (timer_create(CLOCK_MONOTONIC, &evp, &timerid) == -1)
