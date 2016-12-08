@@ -32,16 +32,9 @@
 #include <linux/mm.h>
 #include <linux/dma-mapping.h>
 
-#if 0
-#include <mach/memory.h>
-#include <mach/hardware.h>
-#include <mach/irqs.h>
-#include <asm/hardware/edma.h>
-#else
 #include <asm/memory.h>
 #include <linux/platform_data/edma.h>
 #include <linux/dmaengine.h>
-#endif
 
 /*#undef EDMA3_DEBUG*/
 #define EDMA3_DEBUG
@@ -92,12 +85,12 @@ module_param(ccnt, int, S_IRUGO);
 static void callback1(unsigned lch, u16 ch_status, void *data)
 {
     switch(ch_status) {
-        case DMA_COMPLETE:
+        case EDMA_DMA_COMPLETE:
             irqraised1 = 1;
-            DMA_PRINTK ("\n From Callback 1: Channel %d status is: %u\n",
-              lch, ch_status);
+            /*DMA_PRINTK ("\n From Callback 1: Channel %d status is: %u\n",
+              lch, ch_status);*/
             break;
-        case DMA_CC_ERROR:
+        case EDMA_DMA_CC_ERROR:
             irqraised1 = -1;
             DMA_PRINTK ("\nFrom Callback 1: DMA_CC_ERROR occured "
                     "on Channel %d\n", lch);
@@ -110,12 +103,12 @@ static void callback1(unsigned lch, u16 ch_status, void *data)
 static void callback2(unsigned lch, u16 ch_status, void *data)
 {
     switch(ch_status) {
-        case DMA_COMPLETE:
+        case EDMA_DMA_COMPLETE:
             irqraised2 = 1;
-            DMA_PRINTK ("\n From Callback 2: Channel %d status is: %u\n",
-              lch, ch_status);
+            /*DMA_PRINTK ("\n From Callback 2: Channel %d status is: %u\n",
+              lch, ch_status);*/
             break;
-        case DMA_CC_ERROR:
+        case EDMA_DMA_CC_ERROR:
             irqraised2 = -1;
             DMA_PRINTK ("\nFrom Callback 2: DMA_CC_ERROR occured "
                     "on Channel %d\n", lch);
@@ -330,7 +323,14 @@ int edma3_memtomemcpytest_dma (int acnt, int bcnt, int ccnt, int sync_mode, int 
         }
 
         /* Wait for the Completion ISR. */
-        while (irqraised1 == 0u);
+        count = 0;
+        while (irqraised1 == 0u) {
+            if (count > 0x2000000) {
+                DMA_PRINTK ("edma3_memtomemcpytest_dma: Timeout!!!\n");
+                break;
+            }
+            count ++;
+        }
 
         /* Check the status of the completed transfer */
         if (irqraised1 < 0) {
@@ -477,7 +477,14 @@ int edma3_memtomemcpytest_dma_link(int acnt, int bcnt, int ccnt, int sync_mode, 
         }
 
         /* Wait for the Completion ISR. */
-        while (irqraised1 == 0u);
+        count = 0;
+        while (irqraised1 == 0u) {
+            if (count > 0x2000000) {
+                DMA_PRINTK ("edma3_memtomemcpytest_dma_link: Timeout!!!\n");
+                break;
+            }
+            count ++;
+        }
 
         /* Check the status of the completed transfer */
         if (irqraised1 < 0) {
@@ -503,7 +510,14 @@ int edma3_memtomemcpytest_dma_link(int acnt, int bcnt, int ccnt, int sync_mode, 
             }
 
             /* Wait for the Completion ISR. */
-            while (irqraised1 == 0u);
+            count = 0;
+            while (irqraised1 == 0u) {
+                if (count > 0x2000000) {
+                    DMA_PRINTK ("edma3_memtomemcpytest_dma_link: Timeout!!!\n");
+                    break;
+                }
+                count ++;
+            }
 
             /* Check the status of the completed transfer */
             if (irqraised1 < 0) {
@@ -692,7 +706,14 @@ int edma3_memtomemcpytest_dma_chain(int acnt, int bcnt, int ccnt, int sync_mode,
          * completion ISR on channel 2 first, before proceeding
          * ahead.
          */
-        while (irqraised2 == 0u);
+        count = 0;
+        while (irqraised2 == 0u) {
+            if (count > 0x2000000) {
+                DMA_PRINTK ("edma3_memtomemcpytest_dma_chain: Timeout!!!\n");
+                break;
+            }
+            count ++;
+        };
 
         /* Check the status of the completed transfer */
         if (irqraised2 < 0) {
