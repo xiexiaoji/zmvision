@@ -3,8 +3,16 @@
 #include <string.h>
 #include <errno.h>
 
+#if defined(_MSC_VER)
+#define BOOT2_START_STR "$A90000400,\n"
+#define FW_START_STR    "$A90010000,\n"
+#elif defined(__GNUC__)
 #define BOOT2_START_STR "$A90000400,\r\n"
 #define FW_START_STR    "$A90010000,\r\n"
+#else
+#define BOOT2_START_STR "$A90000400,"
+#define FW_START_STR    "$A90010000,"
+#endif
 
 int main(int argc, char * argv[]) {
     FILE * pfSrc1;
