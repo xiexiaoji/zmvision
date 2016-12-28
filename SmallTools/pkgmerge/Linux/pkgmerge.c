@@ -19,7 +19,6 @@ int main(int argc, char * argv[]) {
     FILE * pfSrc2;
     FILE * pfHex;
     char buf[256]={0};
-    int needInsert = 0;
 
     if (4 != argc) {
         printf("Params error!\n");
@@ -45,30 +44,23 @@ int main(int argc, char * argv[]) {
         return -1;
     }
 
-    memset(buf, 0x00, 256);
-    while (NULL != fgets(buf, 256, pfSrc1)) {
-        if ((strlen(FW_START_STR) != strlen(buf)) || (0 != strcmp(FW_START_STR, buf))) {
-            fputs(buf, pfHex);
-        } else {
-            memset(buf, 0x00, 256);
-            while (NULL != fgets(buf, 256, pfSrc2)) {
-                if (strlen(FW_START_STR) == strlen(buf)) {
-                    if (0 == strcmp(BOOT2_START_STR, buf)) {
-                        needInsert = 1;
-                    } else if (0 == strcmp(FW_START_STR, buf)) {
-                        needInsert = 0;
-                        break;
-                    }
-                }
-                if (needInsert) {
-                    fputs(buf, pfHex);
-                }
-                memset(buf, 0x00, 256);
-            }
-            fputs(FW_START_STR, pfHex);
-        }
-        memset(buf, 0x00, 256);
-    }
+	memset(buf, 0x00, 256);
+	while (NULL != fgets(buf, 256, pfSrc1)) {
+		if ((strlen(FW_START_STR) != strlen(buf)) || (0 != strcmp(FW_START_STR, buf))) {
+			fputs(buf, pfHex);
+		}
+		else {
+			break;
+		}
+		memset(buf, 0x00, 256);
+	}
+
+	fgets(buf, 256, pfSrc2);
+	memset(buf, 0x00, 256);
+	while (NULL != fgets(buf, 256, pfSrc2)) {
+		fputs(buf, pfHex);
+		memset(buf, 0x00, 256);
+	}
 
     fclose(pfSrc1);
     fclose(pfSrc2);
