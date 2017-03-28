@@ -4,7 +4,9 @@ svn st > modifyfiles.txt
 vim modifyfiles.txt
 mkdir -p zzdiffpatch
 cp -f modifyfiles.txt zzdiffpatch/
-sed -i 's/^.\ \{7\}//g' modifyfiles.txt
+mkdir -p zzdiffpatch/old
+mkdir -p zzdiffpatch/new
+sed -i 's/^.\ \{2\}.\ \{4\}//g' modifyfiles.txt
 
 for line in `cat modifyfiles.txt`
 do
@@ -13,17 +15,26 @@ do
     svn info $filepath 1>/dev/null 2>/dev/null
     if [ $? = 0 ]
     then
-        mkdir -p zzdiffpatch/old/$filepath
+		if [ $filepath != $line ]
+		then
+			mkdir -p zzdiffpatch/old/$filepath
+		fi
     fi
 
     svn info $line 1>/dev/null 2>/dev/null
     if [ $? = 0 ]
     then
-        mkdir -p zzdiffpatch/old/$filepath
+		if [ $filepath != $line ]
+		then
+			mkdir -p zzdiffpatch/old/$filepath
+		fi
         svn cat $line > zzdiffpatch/old/$line
     fi
 
-    mkdir -p zzdiffpatch/new/$filepath
+	if [ $filepath != $line ]
+	then
+		mkdir -p zzdiffpatch/new/$filepath
+	fi
     cp -af $line zzdiffpatch/new/$filepath
 done
 
